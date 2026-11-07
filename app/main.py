@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, Query, Request
+from fastapi.responses import JSONResponse
 from app.config import settings
 from app.portal import PortalClient, PortalError
 
@@ -16,7 +17,7 @@ app = FastAPI(title="Urja Meter API", version="1.0.0", description="Read-only fa
 
 @app.exception_handler(PortalError)
 async def portal_error_handler(request: Request, exc: PortalError):
-    raise HTTPException(status_code=exc.status_code, detail=str(exc))
+    return JSONResponse(status_code=exc.status_code, content={"detail": str(exc)})
 
 
 def portal(request: Request):
